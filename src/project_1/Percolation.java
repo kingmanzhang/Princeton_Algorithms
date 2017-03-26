@@ -102,6 +102,7 @@ public class Percolation {
    	System.out.println("Percolation? " + test.percolates());
    	test.open(3, 2);
    	System.out.println("Percolation? " + test.percolates());
+   	System.out.println("open sites: " + test.openCount);
    }
 }
 
