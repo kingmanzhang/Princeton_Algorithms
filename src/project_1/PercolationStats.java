@@ -2,13 +2,10 @@ package project_1;
 
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
-import edu.princeton.cs.algs4.StdIn;
-
 
 public class PercolationStats {
 	
 	private int N; 
-	private int trials; 
 	private double[] percent;
 	
 	public PercolationStats(int n, int trials) {
@@ -16,7 +13,6 @@ public class PercolationStats {
 		if(n <= 0 || trials <= 0) 
 			throw new IllegalArgumentException();
 		this.N= n;
-		this.trials = trials;
 		this.percent = new double[trials];
 		int row;
 		int col;

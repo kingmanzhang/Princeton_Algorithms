@@ -9,7 +9,7 @@ public class Percolation {
 	private WeightedQuickUnionUF grid;
 	private int openCount;
 	
-   public Percolation(int n)  {// create n-by-n grid, with all sites blocked
+   public Percolation(int n)  { // create n-by-n grid, with all sites blocked
    	if (n <= 0) 
    		throw new IllegalArgumentException();
    	this.N = n;
@@ -33,30 +33,30 @@ public class Percolation {
    	if (!isOpen(row, col)) {
    		
    		status[(row - 1) * N + col] = true ; //change status
-   		openCount++; //update counts of open site
-   		//union with its open neighbors 
-   		//first deal with its right neighbor 
+   		openCount++; // update counts of open site
+   		// union with its open neighbors 
+   		// first deal with its right neighbor 
    		if(col < N && isOpen(row, col + 1)) {
    			grid.union((row - 1) * N + col, (row - 1) * N + col + 1);
    		}
    		
-   		//deal with left neighbor
+   		// deal with left neighbor
    		if(col > 1 && isOpen(row, col -1)) {
    			grid.union ((row - 1) * N + col, (row -1) * N + col - 1);
    		}
    		
-   		//deal with bottom neighbor
+   		// deal with bottom neighbor
    		if(row < N && isOpen(row + 1, col)) {
    			grid.union((row - 1) * N + col, row * N + col);
    		}
    		
-   		//deal with upper bottom
+   		// deal with upper bottom
    		if(row > 1 && isOpen(row - 1, col)) {
    			grid.union((row - 1) * N + col, (row - 2) * N + col);
    		}
    		
-   		//deal with special case
-   		//if open a site in the first row, it should union with virtual point
+   		// deal with special case
+   		// if open a site in the first row, it should union with virtual point
    		if(row == 1) {
    			grid.union(col, 0);
    		}
@@ -79,12 +79,12 @@ public class Percolation {
    	return grid.connected((row - 1) * N + col, 0);
    
    }
-   public int numberOfOpenSites() {// number of open sites
+   public int numberOfOpenSites() { // number of open sites
   
    	return openCount;
    
    }
-   public boolean percolates() {// does the system percolate?
+   public boolean percolates() { // does the system percolate?
    
    	return grid.connected(0, N * N + 1);
    
