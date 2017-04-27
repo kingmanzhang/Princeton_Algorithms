@@ -94,6 +94,7 @@ public class Dequeue<Item> implements Iterable<Item> {
 			tail = null;
 		} else {
 			tail = tail.getPrev();
+			tail.setNext(null);
 		}
 		
 		return toRemove.getItem();	
@@ -104,68 +105,99 @@ public class Dequeue<Item> implements Iterable<Item> {
 	@Override
 	public Iterator<Item> iterator() {
 		
-		return null;
+		return new DequeueIterator<Item>(head);
+		
 	}
 	
+	
 	public static void main(String[] args) {
-		
-		
+		Dequeue<String> stringList = new Dequeue<String>();
+		stringList.addFirst("Aaron");
+		System.out.println("size is: " + stringList.size());
+		stringList.addFirst("Sharon");
+		System.out.println("size is: " + stringList.size());
+		stringList.addFirst("SH");
+		System.out.println("size is: " + stringList.size());
+		stringList.addLast("Wisconsin");
+		System.out.println("size is: " + stringList.size());
+		System.out.println("First element is: " + stringList.removeFirst());
+		System.out.println("Last element is: " + stringList.removeLast());
+		Iterator<String> itr = stringList.iterator();
+		while(itr.hasNext()) {
+			String current = itr.next();
+			System.out.println("Current element is: " + current);
+		}
 	}
 
 }
 
-class Node <Item> {
+class Node<Item> {
 	Item item;
-	Node next;
-	Node prev;
+	Node<Item> next;
+	Node<Item> prev;
 	
 	public Node(Item item) {
 		this.item = item;
-		next = null;
-		prev = null;
+		this.next = null;
+		this.prev = null;
 	}
 	
 	public void setNext(Node<Item> node) {
+		
 		next = node;
+		
 	}
 	
 	public void setPrev(Node<Item> node) {
+		
 		prev = node;
+		
 	}
 	
 	public Node<Item> getNext() {
+		
 		return next;
+		
 	}
 	
 	public Node<Item> getPrev() {
+		
 		return prev;
+		
 	}
 	
 	public Item getItem() {
+		
 		return item;
+		
 	}
+}
 	
 	class DequeueIterator<Item> implements Iterator<Item> {
 		
 		private Node<Item> current;
-		private Item next;
 		
 		public DequeueIterator(Node<Item> node) {
 			this.current = node;
-			next = null;
 		}
 
 		@Override
 		public boolean hasNext() {
 
-			return current.getNext() != null;
+			return current != null;
 		}
 
 		@Override
 		public Item next() {
-	
-			return current.getItem();
+			if(this.hasNext()) {
+				Item item = current.getItem();
+				current = current.getNext();
+				return item;
+			} else {
+				return null;
+			}
+			
 		}
 		
 	}
-}
+
