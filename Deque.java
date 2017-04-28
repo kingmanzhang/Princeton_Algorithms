@@ -1,14 +1,14 @@
-package project_2;
+
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Dequeue<Item> implements Iterable<Item> {
+public class Deque<Item> implements Iterable<Item> {
 	private Node<Item> head;
 	private Node<Item> tail;
 	private int size;
 	
-	public Dequeue() {
+	public Deque() {
 		this.size = 0;
 		this.head = null;
 		this.tail = null;
@@ -28,13 +28,13 @@ public class Dequeue<Item> implements Iterable<Item> {
 	
 	public void addFirst(Item item) {
 		
-		if(item == null) {
-			throw new NoSuchElementException();
+		if (item == null) {
+			throw new NullPointerException();
 		}
 		
 		Node<Item> newNode = new Node<Item>(item);
 		
-		if(size == 0) {
+		if (size == 0) {
 			head = newNode;
 			tail = newNode;
 		} else {
@@ -47,13 +47,13 @@ public class Dequeue<Item> implements Iterable<Item> {
 	
 	public void addLast(Item item) {
 		
-		if(item == null) {
-			throw new NoSuchElementException();
+		if (item == null) {
+			throw new NullPointerException();
 		}
 		
 		Node<Item> newNode = new Node<Item>(item);
 		
-		if(size == 0) {
+		if (size == 0) {
 			head = newNode;
 			tail = newNode;
 		} else {
@@ -67,12 +67,12 @@ public class Dequeue<Item> implements Iterable<Item> {
 	
 	public Item removeFirst() {
 		
-		if(isEmpty()) {
+		if (isEmpty()) {
 			throw new NoSuchElementException();
 		}
 		Node<Item> toRemove = head;
 		size--;
-		if(size == 0) {
+		if (size == 0) {
 			head = null;
 			tail = null;
 		} else {
@@ -84,12 +84,12 @@ public class Dequeue<Item> implements Iterable<Item> {
 	
 	public Item removeLast() {
 		
-		if(isEmpty()) {
+		if (isEmpty()) {
 			throw new NoSuchElementException();
 		}
 		Node<Item> toRemove = tail;
 		size--;
-		if(size == 0) {
+		if (size == 0) {
 			head = null;
 			tail = null;
 		} else {
@@ -111,7 +111,7 @@ public class Dequeue<Item> implements Iterable<Item> {
 	
 	
 	public static void main(String[] args) {
-		Dequeue<String> stringList = new Dequeue<String>();
+		Deque<String> stringList = new Deque<String>();
 		stringList.addFirst("Aaron");
 		System.out.println("size is: " + stringList.size());
 		stringList.addFirst("Sharon");
@@ -123,81 +123,83 @@ public class Dequeue<Item> implements Iterable<Item> {
 		System.out.println("First element is: " + stringList.removeFirst());
 		System.out.println("Last element is: " + stringList.removeLast());
 		Iterator<String> itr = stringList.iterator();
-		while(itr.hasNext()) {
+		while (itr.hasNext()) {
 			String current = itr.next();
 			System.out.println("Current element is: " + current);
 		}
 	}
 
-}
-
-class Node<Item> {
-	Item item;
-	Node<Item> next;
-	Node<Item> prev;
-	
-	public Node(Item item) {
-		this.item = item;
-		this.next = null;
-		this.prev = null;
-	}
-	
-	public void setNext(Node<Item> node) {
+	private class Node<Item> {
+		private Item item;
+		private Node<Item> next;
+		private Node<Item> prev;
 		
-		next = node;
-		
-	}
-	
-	public void setPrev(Node<Item> node) {
-		
-		prev = node;
-		
-	}
-	
-	public Node<Item> getNext() {
-		
-		return next;
-		
-	}
-	
-	public Node<Item> getPrev() {
-		
-		return prev;
-		
-	}
-	
-	public Item getItem() {
-		
-		return item;
-		
-	}
-}
-	
-	class DequeueIterator<Item> implements Iterator<Item> {
-		
-		private Node<Item> current;
-		
-		public DequeueIterator(Node<Item> node) {
-			this.current = node;
+		public Node(Item item) {
+			this.item = item;
+			this.next = null;
+			this.prev = null;
 		}
-
-		@Override
-		public boolean hasNext() {
-
-			return current != null;
-		}
-
-		@Override
-		public Item next() {
-			if(this.hasNext()) {
-				Item item = current.getItem();
-				current = current.getNext();
-				return item;
-			} else {
-				return null;
-			}
+		
+		public void setNext(Node<Item> node) {
+			
+			next = node;
 			
 		}
 		
+		public void setPrev(Node<Item> node) {
+			
+			prev = node;
+			
+		}
+		
+		public Node<Item> getNext() {
+			
+			return next;
+			
+		}
+		
+		public Node<Item> getPrev() {
+			
+			return prev;
+			
+		}
+		
+		public Item getItem() {
+			
+			return item;
+			
+		}
 	}
+		
+		private class DequeueIterator<Item> implements Iterator<Item> {
+			
+			private Node<Item> current;
+			
+			public DequeueIterator(Node<Item> node) {
+				this.current = node;
+			}
+
+			@Override
+			public boolean hasNext() {
+
+				return current != null;
+			}
+
+			@Override
+			public Item next() {
+				if (this.hasNext()) {
+					Item item = current.getItem();
+					current = current.getNext();
+					return item;
+				} else {
+					throw new NoSuchElementException();
+				}
+				
+			}
+			
+		}
+
+	
+}
+
 
