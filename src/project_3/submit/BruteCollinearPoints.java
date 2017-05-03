@@ -1,16 +1,16 @@
-package project_3;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class FastCollinearPoints {
+public class BruteCollinearPoints {
 	
-	//private LineSegment[] lineSegments;
-	private ArrayList<LineSegment> lineSegments;
 	private Point[] points;
+	private ArrayList<LineSegment> lineSegments;
 	
-	public FastCollinearPoints(Point[] points) {     // finds all line segments containing 4 or more points
-		if (points == null) {
+   public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
+   	
+   	if (points == null) {
    		throw new NullPointerException();
    	}
    	for (int i = 0; i < points.length; i++) {
@@ -20,45 +20,45 @@ public class FastCollinearPoints {
    	}
    	if(this.hasDuplicate(points))
    		throw new IllegalArgumentException();
+   
    	
    	this.points = points;
    	this.lineSegments = new ArrayList<>();
-	
-	}
-	
+   
+   
+   }
+   
    public int numberOfSegments() {        // the number of line segments
    	
    	return lineSegments.size();
    	
    }
-   public LineSegment[] segments() {               // the line segments
+   
+   public LineSegment[] segments() {                // the line segments
    	
-   	int i = 0; 
-   	do {
-   		Arrays.sort(points, i + 1, points.length, points[i].slopeOrder());
-   		int colineared = 1;
-   		int j = i + 2;
-   		double reference = points[i].slopeTo(points[i + 1]);
-   		while (j < points.length && isEqual(points[i].slopeTo(points[j]), reference)) {
-   			colineared++;
-   			j++;
+   	for (int p = 0; p < points.length - 3; p++) {
+   		for (int q = p + 1; q < points.length - 2; q++) { 			
+   			for (int r = q + 1; r < points.length - 1; r++) { 				
+   					for (int s = r + 1; s < points.length; s++) {
+   						double slopePQ = points[p].slopeTo(points[q]);
+   						double slopePR = points[p].slopeTo(points[r]);
+   						double slopePS = points[p].slopeTo(points[s]);
+   						if (isEqual(slopePQ, slopePR) && isEqual(slopePQ, slopePS)) {
+      						lineSegments.add(new LineSegment(points[p], points[s]));	
+   						}
+   						}
+   					}
+   			}
    		}
-   		if (colineared >= 4) {
-   			lineSegments.add(new LineSegment(points[i], points[i + colineared - 1]));
-   		}
-   		i += colineared;
-   	} while (i < points.length - 3);
-    	
+  System.out.println("line segments size: " + lineSegments.size()); 	
    	LineSegment[] toReturn = new LineSegment[lineSegments.size()];
-   	i = 0;
+   	int i = 0;
    	for (LineSegment seg: lineSegments) {
    		toReturn[i++] = seg;
    	}
   System.out.println("toReturn size: " + toReturn.length);
    	return toReturn;	
    }
-   	
-   
    
    private boolean hasDuplicate(Point[] points) {
    	Point[] clone = points.clone();
@@ -68,7 +68,8 @@ public class FastCollinearPoints {
    			return true;
    		}
    	}
-   	return false;	
+   	return false;
+   	
    }
    
    private boolean isEqual(double x, double y) {
@@ -77,4 +78,5 @@ public class FastCollinearPoints {
    	}
    	return x - y > -0.0001 && x - y < 0.0001;
    }
+   
 }

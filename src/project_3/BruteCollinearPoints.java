@@ -1,39 +1,86 @@
 package project_3;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class BruteCollinearPoints {
 	
-	private int numSeg;
 	private Point[] points;
+	private ArrayList<LineSegment> lineSegments;
 	
    public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
-   	this.numSeg = 0;
+   	
+   	if (points == null) {
+   		throw new NullPointerException();
+   	}
+   	for (int i = 0; i < points.length; i++) {
+   		if (points[i] == null) {
+   			throw new NullPointerException();
+   		}
+   	}
+   	if(this.hasDuplicate(points))
+   		throw new IllegalArgumentException();
+   
+   	
    	this.points = points;
+   	this.lineSegments = new ArrayList<>();
    
    
    }
    
    public int numberOfSegments() {        // the number of line segments
    	
-   	return numSeg;
+   	return lineSegments.size();
    	
    }
    
    public LineSegment[] segments() {                // the line segments
    	
-   	LineSegment[] lineSegments = new LineSegment[points.length / 4];
-   	for (int i = 0; i < points.length - 3; i++) {
-   		for (int j = i + 2; j < points.length - 1; j++) {
-   			if ((points[i].slopeTo(points[i + 1]) - points[i].slopeTo(points[j])) < 0.001) {
-   				for (int k = j + 1; k < points.length; k++) {
-   					if ((points[i].slopeTo(points[i + 1]) - points[i].slopeTo(points[k])) < 0.001) {
-   						lineSegments[numSeg++] = new LineSegment(points[i], points[k]);
+   	for (int p = 0; p < points.length - 3; p++) {
+   		for (int q = p + 1; q < points.length - 2; q++) { 			
+   			for (int r = q + 1; r < points.length - 1; r++) { 				
+   					for (int s = r + 1; s < points.length; s++) {
+   						double slopePQ = points[p].slopeTo(points[q]);
+   						double slopePR = points[p].slopeTo(points[r]);
+   						double slopePS = points[p].slopeTo(points[s]);
+   						if (isEqual(slopePQ, slopePR) && isEqual(slopePQ, slopePS)) {
+   							Point[] colineared = new Point[] {points[p], points[q], points[r], points[s]};
+   							Arrays.sort(colineared);
+  System.out.println("colineared points: " + points[0] + points[1] + points[2] + points[3]);
+      						lineSegments.add(new LineSegment(points[0], points[3]));	
+   						}
+   						}
    					}
-   				}
    			}
    		}
+  //System.out.println("line segments size: " + lineSegments.size()); 	
+   	LineSegment[] toReturn = new LineSegment[lineSegments.size()];
+   	int i = 0;
+   	for (LineSegment seg: lineSegments) {
+   		toReturn[i++] = seg;
    	}
-   	return lineSegments;
+  //System.out.println("toReturn size: " + toReturn.length);
+   	return toReturn;	
+   }
+   
+   private boolean hasDuplicate(Point[] points) {
+   	Point[] clone = points.clone();
+   	Arrays.sort(clone);
+   	for (int i = 0; i < clone.length - 1; i++) {
+   		if (clone[i].compareTo(clone[i + 1]) == 0) {
+   			return true;
+   		}
+   	}
+   	return false;
    	
+   }
+   
+   private boolean isEqual(double x, double y) {
+   	if(x == Double.POSITIVE_INFINITY && y == Double.POSITIVE_INFINITY) {
+   		return true;
+   	}
+   	return x - y > -0.0001 && x - y < 0.0001;
    }
    
 }

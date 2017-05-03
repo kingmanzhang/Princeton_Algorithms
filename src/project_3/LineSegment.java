@@ -1,4 +1,4 @@
-package project_3;
+package project_3; 
 
 /*************************************************************************
  *  Compilation:  javac LineSegment.java
