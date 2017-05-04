@@ -18,7 +18,7 @@ public class PatternRecognition {
 	        points[i] = new Point(x, y);
 System.out.println("Point: " + points[i]);
 	    }
-StdOut.println("num of points in file: " + points.length);
+// StdOut.println("num of points in file: " + points.length);
 
 
 	    // draw the points
@@ -31,7 +31,8 @@ StdOut.println("num of points in file: " + points.length);
 	    StdDraw.show();	  
 	    
 	    // print and draw the line segments
-	    BruteCollinearPoints collinear = new BruteCollinearPoints(points);
+	   // BruteCollinearPoints collinear = new BruteCollinearPoints(points);
+	    FastCollinearPoints collinear = new FastCollinearPoints(points);
 	    for (LineSegment segment : collinear.segments()) {
 	        StdOut.println(segment);
         segment.draw();

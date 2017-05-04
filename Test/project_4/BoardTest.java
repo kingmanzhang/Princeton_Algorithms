@@ -112,19 +112,7 @@ public class BoardTest {
 		System.out.println("initial board: \n" + initial + "\n");
 		while(itr.hasNext()) {
 			System.out.println("neighbor: \n" + itr.next() + "\n\n");
-		}
-		
-		MinPQ<Integer> numQueue = new MinPQ<>();
-		numQueue.insert(1);
-		numQueue.insert(5);
-		numQueue.insert(10);
-		numQueue.insert(4);
-		numQueue.insert(0);
-		
-		System.out.println(numQueue.delMin());
-		System.out.println(numQueue.delMin());
-		System.out.println(numQueue.delMin());
-		System.out.println(numQueue.delMin());
+		}	
 	}
 
 }

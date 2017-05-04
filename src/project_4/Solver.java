@@ -149,8 +149,10 @@ public String toString() {
    	
    }
    public static void main(String[] args) { // solve a slider puzzle (given below)
-   	int[][] initialBlock = new int[][] {{3, 1, 2}, {4, 5, 6}, {7, 8, 0}};
-   			// {{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
+   	int[][] initialBlock = new int[][] {{8, 1, 3}, {0, 2, 4}, {5, 6, 7}};
+   			//{{3, 1, 4, 2}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}};
+   			//{{3, 1, 2}, {4, 5, 6}, {7, 8, 0}};
+   			// 
    			// {{0, 1, 3}, {4, 2, 5}, {7, 8, 6}};
 
 		Board initial = new Board(initialBlock);

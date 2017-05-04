@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class BruteCollinearPoints {
 	
-	private Point[] points;
+	//private Point[] points;
 	private ArrayList<LineSegment> lineSegments;
 	
    public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
@@ -22,10 +22,27 @@ public class BruteCollinearPoints {
    		throw new IllegalArgumentException();
    
    	
-   	this.points = points;
+   	//this.points = points;
    	this.lineSegments = new ArrayList<>();
    
-   
+   	for (int p = 0; p < points.length - 3; p++) {
+   		for (int q = p + 1; q < points.length - 2; q++) { 			
+   			for (int r = q + 1; r < points.length - 1; r++) { 				
+   					for (int s = r + 1; s < points.length; s++) {
+   						double slopePQ = points[p].slopeTo(points[q]);
+   						double slopePR = points[p].slopeTo(points[r]);
+   						double slopePS = points[p].slopeTo(points[s]);
+   						if (isEqual(slopePQ, slopePR) && isEqual(slopePQ, slopePS)) {
+   							Point[] colineared = new Point[] {points[p], points[q], points[r], points[s]};
+   							Arrays.sort(colineared);
+//System.out.println("colineared points: " + points[p] + points[q] + points[r] + points[s]);
+      						lineSegments.add(new LineSegment(colineared[0], colineared[3]));	
+   						}
+   						}
+   					}
+   			}
+   		}
+//   System.out.println("done with constructor");
    }
    
    public int numberOfSegments() {        // the number of line segments
@@ -36,27 +53,14 @@ public class BruteCollinearPoints {
    
    public LineSegment[] segments() {                // the line segments
    	
-   	for (int p = 0; p < points.length - 3; p++) {
-   		for (int q = p + 1; q < points.length - 2; q++) { 			
-   			for (int r = q + 1; r < points.length - 1; r++) { 				
-   					for (int s = r + 1; s < points.length; s++) {
-   						double slopePQ = points[p].slopeTo(points[q]);
-   						double slopePR = points[p].slopeTo(points[r]);
-   						double slopePS = points[p].slopeTo(points[s]);
-   						if (isEqual(slopePQ, slopePR) && isEqual(slopePQ, slopePS)) {
-      						lineSegments.add(new LineSegment(points[p], points[s]));	
-   						}
-   						}
-   					}
-   			}
-   		}
-  System.out.println("line segments size: " + lineSegments.size()); 	
+   	
+  //System.out.println("line segments size: " + lineSegments.size()); 	
    	LineSegment[] toReturn = new LineSegment[lineSegments.size()];
    	int i = 0;
    	for (LineSegment seg: lineSegments) {
    		toReturn[i++] = seg;
    	}
-  System.out.println("toReturn size: " + toReturn.length);
+  //System.out.println("toReturn size: " + toReturn.length);
    	return toReturn;	
    }
    

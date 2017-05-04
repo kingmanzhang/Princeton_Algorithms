@@ -22,8 +22,52 @@ public class FastCollinearPoints {
    	
    	this.points = points;
    	this.lineSegments = new ArrayList<>();
-	
+   	
+   	solve();
+   	
 	}
+	private void solve(){
+		
+		for (int i = 0; i < points.length; i++) {
+   		Point[] otherPoints = new Point[points.length - 1];
+   		System.arraycopy(points, 0, otherPoints, 0, i);
+   		System.arraycopy(points, i + 1, otherPoints, i, points.length - 1 - i);
+   		Arrays.sort(otherPoints, points[i].slopeOrder());
+   		findPoints(points[i], otherPoints);
+   		}
+	}
+	
+	private void findPoints(Point reference, Point[] sortedpoints) {
+		
+		int i = 0; 
+		while (i < sortedpoints.length - 1) {
+			int numColineared = 1;
+			do {
+				i++;
+				numColineared++;
+			} while (i < sortedpoints.length - 1 && isEqual(reference.slopeTo(sortedpoints[i - 1]), reference.slopeTo(sortedpoints[i])));
+			if (numColineared >= 4) {
+				Point[] colineared = new Point[numColineared];
+				colineared[0] = reference;
+				System.arraycopy(sortedpoints, i - numColineared + 1, colineared, 1, numColineared - 1);
+				Arrays.sort(colineared);
+				LineSegment newSegment = new LineSegment(colineared[0], colineared[colineared.length - 1]);
+				boolean existed = false;
+				for (LineSegment existingSeg : lineSegments) {
+					if (existingSeg.toString().equals(newSegment.toString())) {
+						existed = true;
+						break;
+					}
+				}
+				if (!existed) {
+					lineSegments.add(newSegment);	
+				}	
+			}
+		}
+		
+	}
+   		
+	
 	
    public int numberOfSegments() {        // the number of line segments
    	
@@ -32,28 +76,12 @@ public class FastCollinearPoints {
    }
    public LineSegment[] segments() {               // the line segments
    	
-   	int i = 0; 
-   	do {
-   		Arrays.sort(points, i + 1, points.length, points[i].slopeOrder());
-   		int colineared = 1;
-   		int j = i + 2;
-   		double reference = points[i].slopeTo(points[i + 1]);
-   		while (j < points.length && isEqual(points[i].slopeTo(points[j]), reference)) {
-   			colineared++;
-   			j++;
-   		}
-   		if (colineared >= 4) {
-   			lineSegments.add(new LineSegment(points[i], points[i + colineared - 1]));
-   		}
-   		i += colineared;
-   	} while (i < points.length - 3);
-    	
    	LineSegment[] toReturn = new LineSegment[lineSegments.size()];
-   	i = 0;
+   	int i = 0;
    	for (LineSegment seg: lineSegments) {
    		toReturn[i++] = seg;
    	}
-  System.out.println("toReturn size: " + toReturn.length);
+//  System.out.println("toReturn size: " + toReturn.length);
    	return toReturn;	
    }
    	
