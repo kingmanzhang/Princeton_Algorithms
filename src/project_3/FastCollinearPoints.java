@@ -127,6 +127,6 @@ public class FastCollinearPoints {
    			&& y == Double.POSITIVE_INFINITY) {
    		return true;
    	}
-   	return x - y > -0.0001 && x - y < 0.0001;
+   	return x - y > -0.000000001 && x - y < 0.000000001;
    }
 }

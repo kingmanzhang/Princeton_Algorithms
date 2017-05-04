@@ -77,10 +77,11 @@ public class BruteCollinearPoints {
    }
    
    private boolean isEqual(double x, double y) {
-   	if(x == Double.POSITIVE_INFINITY && y == Double.POSITIVE_INFINITY) {
+   	if ((x == Double.POSITIVE_INFINITY || x == Double.NEGATIVE_INFINITY) 
+   			&& (y == Double.POSITIVE_INFINITY || y == Double.NEGATIVE_INFINITY)) {
    		return true;
    	}
-   	return x - y > -0.0001 && x - y < 0.0001;
+   	return x - y > -0.000001 && x - y < 0.000001;
    }
    
 }

@@ -34,6 +34,7 @@ public class PatternRecognition {
 	   // BruteCollinearPoints collinear = new BruteCollinearPoints(points);
 	    //FastCollinearPoints collinear = new FastCollinearPoints(points);
 	    FastCollinearPoints collinear = new FastCollinearPoints(points);
+StdOut.print("total lines: " + collinear.numberOfSegments());
 	    for (LineSegment segment : collinear.segments()) {
 	        StdOut.println(segment);
         segment.draw();

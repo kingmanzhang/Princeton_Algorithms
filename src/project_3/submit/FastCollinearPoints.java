@@ -3,12 +3,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FastCollinearPoints {
-	
-	//private LineSegment[] lineSegments;
 	private ArrayList<LineSegment> lineSegments;
-	private Point[] points;
 	
-	public FastCollinearPoints(Point[] points) {     // finds all line segments containing 4 or more points
+	public FastCollinearPoints(Point[] points) {
+	
 		if (points == null) {
    		throw new NullPointerException();
    	}
@@ -19,73 +17,98 @@ public class FastCollinearPoints {
    	}
    	if(this.hasDuplicate(points))
    		throw new IllegalArgumentException();
-   	
-   	this.points = points;
    	this.lineSegments = new ArrayList<>();
-   	
-   	solve();
-   	
-	}
-	private void solve(){
-		
-		for (int i = 0; i < points.length; i++) {
-   		Point[] otherPoints = new Point[points.length - 1];
-   		System.arraycopy(points, 0, otherPoints, 0, i);
-   		System.arraycopy(points, i + 1, otherPoints, i, points.length - 1 - i);
-   		Arrays.sort(otherPoints, points[i].slopeOrder());
-   		findPoints(points[i], otherPoints);
-   		}
+   	solve(points);
+
 	}
 	
-	private void findPoints(Point reference, Point[] sortedpoints) {
+	private void solve(Point[] points) {
 		
-		int i = 0; 
-		while (i < sortedpoints.length - 1) {
-			int numColineared = 1;
-			do {
-				i++;
-				numColineared++;
-			} while (i < sortedpoints.length - 1 && isEqual(reference.slopeTo(sortedpoints[i - 1]), reference.slopeTo(sortedpoints[i])));
-			if (numColineared >= 4) {
-				Point[] colineared = new Point[numColineared];
-				colineared[0] = reference;
-				System.arraycopy(sortedpoints, i - numColineared + 1, colineared, 1, numColineared - 1);
-				Arrays.sort(colineared);
-				LineSegment newSegment = new LineSegment(colineared[0], colineared[colineared.length - 1]);
-				boolean existed = false;
-				for (LineSegment existingSeg : lineSegments) {
-					if (existingSeg.toString().equals(newSegment.toString())) {
-						existed = true;
-						break;
-					}
+		for (int i = 0; i < points.length; i++) {
+			Point reference = points[i]; // set a reference point
+
+			Point[] otherPoints = new Point[points.length - 1]; // get all other points
+			System.arraycopy(points, 0, otherPoints, 0, i); // copy first part
+			System.arraycopy(points, i + 1, otherPoints, i, points.length - 1 - i); // copy second part
+			findLine(reference, otherPoints);
+		}
+	}
+	
+	private void findLine(Point reference, Point[] otherPoints) {
+//System.out.println("reference point: " + reference);	
+//printPoints(otherPoints);
+		Arrays.sort(otherPoints, reference.slopeOrder()); // sort points by slope
+//System.out.println("ordered by slope");		
+//printPoints(otherPoints);
+		double[] slopes = new double[otherPoints.length]; // make a slope array to avoid multiple computation
+		for (int i = 0; i < otherPoints.length; i++) {
+			slopes[i] = reference.slopeTo(otherPoints[i]);
+		}
+		// now find same neighbors 
+		int numColineared = 2; // any two points form a line
+		for (int i = 0; i < slopes.length - 1; i++) {
+			if (isEqual(slopes[i], slopes[i + 1])) { //current = next
+				numColineared++; 
+				// if current is the second last point, then need to test line
+				if (i == slopes.length - 2 && numColineared >= 4) {
+					addLine(reference, otherPoints, otherPoints.length - 1, numColineared);
+					numColineared = 2;
 				}
-				if (!existed) {
-					lineSegments.add(newSegment);	
-				}	
+			} else { //current != next
+				if (numColineared >= 4) { // previous points form a line. stop position is i.
+					addLine(reference, otherPoints, i, numColineared);
+				}
+				numColineared = 2; // reset
 			}
 		}
 		
 	}
-   		
 	
+	private void addLine(Point reference, Point[] otherPoints, int stopPosition, int numCollineared) {
+		
+		Point[] linedPoints = new Point[numCollineared];
+		linedPoints[0] = reference;
+		System.arraycopy(otherPoints, stopPosition - numCollineared + 2, linedPoints, 1, numCollineared - 1);
+		Arrays.sort(linedPoints);
+//System.out.print("lined points: ");
+//printPoints(linedPoints);
+		LineSegment newSeg = new LineSegment(linedPoints[0], linedPoints[numCollineared - 1]);
+		boolean isExisted = false;
+		for (LineSegment seg : lineSegments) {
+			if (seg.toString().equals(newSeg.toString())) {
+				isExisted = true;
+				break;
+			}
+		}
+		if (!isExisted) {
+			lineSegments.add(newSeg);
+		}
+		
+	}
 	
-   public int numberOfSegments() {        // the number of line segments
+	private void printPoints(Point[] points) {
+		for (int i = 0; i < points.length; i++) {
+			System.out.print(points[i] + " ");
+		}
+		System.out.println("");
+	}
+
+   public int numberOfSegments() {
    	
    	return lineSegments.size();
    	
    }
-   public LineSegment[] segments() {               // the line segments
-   	
-   	LineSegment[] toReturn = new LineSegment[lineSegments.size()];
-   	int i = 0;
-   	for (LineSegment seg: lineSegments) {
-   		toReturn[i++] = seg;
-   	}
-//  System.out.println("toReturn size: " + toReturn.length);
-   	return toReturn;	
-   }
-   	
    
+   
+   public LineSegment[] segments() {
+   	
+   	LineSegment[] seg = new LineSegment[lineSegments.size()];
+   	int i = 0;
+   	for (LineSegment linesegment : lineSegments) {
+   		seg[i++] = linesegment;
+   	}
+   	return seg;
+   }
    
    private boolean hasDuplicate(Point[] points) {
    	Point[] clone = points.clone();
@@ -99,9 +122,10 @@ public class FastCollinearPoints {
    }
    
    private boolean isEqual(double x, double y) {
-   	if(x == Double.POSITIVE_INFINITY && y == Double.POSITIVE_INFINITY) {
+   	if (x == Double.POSITIVE_INFINITY 
+   			&& y == Double.POSITIVE_INFINITY) {
    		return true;
    	}
-   	return x - y > -0.0001 && x - y < 0.0001;
+   	return x - y > -0.000000001 && x - y < 0.000000001;
    }
 }
