@@ -71,26 +71,30 @@ public class KdTree {
    		numCount++;
    	}
    	if (!contains(p)) {
-   		root = insert(p, root, root.getRect(), true);
+   		RectHV rootRec = root.getRect();
+   		double[] rectBorders = new double[]{rootRec.xmin(), rootRec.ymin(), rootRec.xmax(), rootRec.ymax()};
+   		root = insert(p, root, rectBorders, true);
    	}	
    }
    
-   private KdNode insert(Point2D p, KdNode r, RectHV rect, Boolean dimX) {
+   private KdNode insert(Point2D p, KdNode r, double[] rect, Boolean dimX) {
+   	
 
    	if (dimX) { // use X dimension
    		
    		if (r == null) {
    			keys.enqueue(p);
    			numCount++;
-   			return new KdNode(p, rect);
+   			RectHV newrect = new RectHV(rect[0], rect[1], rect[2], rect[3]);
+   			return new KdNode(p, newrect);
    		}
    		
    		if (p.x() < r.getPoint().x()) {
-   			rect = new RectHV(rect.xmin(), rect.ymin(), r.getPoint().x(), rect.ymax());
+   			rect[2] = r.getPoint().x();
    			r.setLeft(insert(p, r.getLeft(), rect, !dimX));
    			return r;
    		} else {
-   			rect = new RectHV(r.getPoint().x(), rect.ymin(), rect.xmax(), rect.ymax());
+   			rect[0] = r.getPoint().x();
    			r.setRight(insert(p, r.getRight(), rect, !dimX));
    			return r;
    		}
@@ -100,15 +104,16 @@ public class KdTree {
    		if (r == null) {
    			keys.enqueue(p);
    			numCount++;
-   			return new KdNode(p, rect);
+   			RectHV newrect = new RectHV(rect[0], rect[1], rect[2], rect[3]);
+   			return new KdNode(p, newrect);
    		}
    		
    		if (p.y() < r.getPoint().y()) {
-   			rect = new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), r.getPoint().y());
+   			rect[3] = r.getPoint().y();
    			r.setLeft(insert(p, r.getLeft(), rect, !dimX));
    			return r;
    		} else {
-   			rect = new RectHV(rect.xmin(), r.getPoint().y(), rect.xmax(), rect.ymax());
+   			rect[1] = r.getPoint().y();
    			r.setRight(insert(p, r.getRight(), rect, !dimX));
    			return r;
    		}
